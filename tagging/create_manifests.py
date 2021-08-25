@@ -5,6 +5,7 @@ import argparse
 import datetime
 import logging
 import os
+from typing import List
 from .docker_runner import DockerRunner
 from .get_taggers_and_manifests import get_taggers_and_manifests
 from .git_helper import GitHelper
@@ -22,7 +23,7 @@ def append_build_history_line(
     short_image_name: str,
     owner: str,
     wiki_path: str,
-    all_tags: list[str],
+    all_tags: List[str],
 ) -> None:
     logger.info("Appending build history line")
 
@@ -42,7 +43,7 @@ def append_build_history_line(
     build_history_line = "|".join([date_column, image_column, links_column]) + "|"
 
     home_wiki_file = os.path.join(wiki_path, "Home.md")
-    with open(home_wiki_file) as f:
+    with open(home_wiki_file, "r") as f:
         file = f.read()
     TABLE_BEGINNING = "|-|-|-|\n"
     file = file.replace(TABLE_BEGINNING, TABLE_BEGINNING + build_history_line + "\n")
@@ -54,7 +55,7 @@ def create_manifest_file(
     short_image_name: str,
     owner: str,
     wiki_path: str,
-    manifests: list[ManifestInterface],
+    manifests: List[ManifestInterface],
     container,
 ) -> None:
     manifest_names = [manifest.__name__ for manifest in manifests]

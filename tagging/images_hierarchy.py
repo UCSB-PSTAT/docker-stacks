@@ -1,7 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, List
 from .taggers import (
     TaggerInterface,
     SHATagger,
@@ -31,8 +31,8 @@ from .manifests import (
 @dataclass
 class ImageDescription:
     parent_image: Optional[str]
-    taggers: list[TaggerInterface] = field(default_factory=list)
-    manifests: list[ManifestInterface] = field(default_factory=list)
+    taggers: List[TaggerInterface] = field(default_factory=list)
+    manifests: List[ManifestInterface] = field(default_factory=list)
 
 
 ALL_IMAGES = {
@@ -51,6 +51,14 @@ ALL_IMAGES = {
     ),
     "minimal-notebook": ImageDescription(parent_image="base-notebook"),
     "scipy-notebook": ImageDescription(parent_image="minimal-notebook"),
+    "rstudio": ImageDescription(
+        parent_image=None,
+        taggers=[
+            RVersionTagger,
+            JupyterLabVersionTagger
+        ],
+        manifests=[CondaEnvironmentManifest, RPackagesManifest],
+    ),
     "r-notebook": ImageDescription(
         parent_image="minimal-notebook",
         taggers=[RVersionTagger],
